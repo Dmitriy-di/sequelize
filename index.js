@@ -11,6 +11,17 @@ const {
 const app = express()
 app.use(express.json())
 
+const { createServer } = require('http')
+const { Server } = require('socket.io')
+
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:8080',
+  },
+})
+
+// Маршруты для http
 //!=================wirehouses
 app.get('/wirehouses', async (req, res) => {
   try {
@@ -281,8 +292,13 @@ app.delete('/contracts', async ({ params: { id } }, res) => {
   }
 })
 
-//
-
 app.listen(3000, async () => {
   await init()
 })
+
+// Запуск сокет-сервера
+io.on('connection', (socket) => {
+  console.log('Подключен клиент ', socket)
+})
+
+httpServer.listen(3001)
