@@ -9,17 +9,41 @@ const {
   Contract,
 } = require('./models/init')
 const app = express()
-app.use(express.json())
-
+const fs = require('fs')
 const { createServer } = require('http')
 const { Server } = require('socket.io')
+const cors = require('cors')
+const acceptMessage = require('./routes/socketAcceptMsg')
+const sendMessage = require('./routes/socketSendMsg')
+// const httpServer = createServer(app)
 
-const httpServer = createServer(app)
-const io = new Server(httpServer, {
-  cors: {
-    origin: 'http://localhost:8080',
-  },
+const httpServer = createServer((req, res) => {
+  if (req.method === 'GET' && req.url === '/') {
+    console.log(1111111)
+    let content = fs.readFileSync('./views/index.html', 'utf-8')
+    res.end(content)
+  }
 })
+
+const io = new Server(httpServer, {
+  // cors: {
+  //   origin: 'http://localhost:8080',
+  // },
+})
+
+const messages = ['Hello world!', 'New Message']
+
+io.on('connection', (socket) => {
+  messages.forEach((message) => {
+    socket.emit('message', message)
+  })
+})
+
+acceptMessage(io)
+sendMessage(io)
+
+app.use(express.json())
+app.use(cors())
 
 // Маршруты для http
 //!=================wirehouses
@@ -293,12 +317,13 @@ app.delete('/contracts', async ({ params: { id } }, res) => {
 })
 
 app.listen(3000, async () => {
-  await init()
+  console.log('Server is runing...')
+  // await init()
 })
 
 // Запуск сокет-сервера
-io.on('connection', (socket) => {
-  console.log('Подключен клиент ', socket)
-})
+// io.on('connection', (socket) => {
+//   console.log('Подключен клиент ', socket)
+// })
 
 httpServer.listen(3001)

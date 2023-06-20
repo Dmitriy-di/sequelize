@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+	<meta charset="UTF-8" />
+
+	<title>Chat</title>
+
+</head>
+
+<body>
+
+	<h1>Chat</h1>
+
+	<form id="form">
+
+		<input id="input" type="text" />
+
+		<button type="submit">Send</button>
+
+	</form>
+
+	<ul id="messages" style="list-style-type: none; padding: 10px; margin: 0"></ul>
+
+</body>
+
+<!-- Подключаем клиентскую библиотеку для socket.io -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"
+	integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous">
+	</script>
+
+<script>
+
+	//инициализируем объект сокета, подключаясь к серверу
+	const socket = io('http://localhost:3001')
+
+	// получаем элемент DOM дерева для добавления сообщений
+	let messages = document.getElementById('messages')
+
+	// слушаем событие, которое мы выбрасываем на сервере
+	socket.on('message', (message) => {
+
+		// создаем новый html элемент li
+		let messageItem = document.createElement('li')
+
+		// заполняем его сообщением
+		messageItem.textContent = message
+
+		// добавляем новый элемент в список
+		messages.appendChild(messageItem)
+	})
+
+	let form = document.getElementById('form');
+	let input = document.getElementById('input');
+
+	form.addEventListener('submit', e => {
+		e.preventDefault();
+
+		socket.on('connect', function () {
+			alert('Connected!');
+		});
+
+		if (!socket.connected) {
+			alert('Not connected!');
+			return;
+		}
+
+		if (input.value) {
+			socket.emit('message', input.value);
+			input.value = '';
+		}
+
+		socket.on('disconnect', function () {
+			alert('Disconnected!');
+
+			setTimeout(() => {
+				socket.connect()
+			}, 5000)
+		});
+	});
+
+</script>
+
+</html>
