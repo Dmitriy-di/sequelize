@@ -15,32 +15,47 @@ const { Server } = require('socket.io')
 const cors = require('cors')
 const acceptMessage = require('./routes/socketAcceptMsg')
 const sendMessage = require('./routes/socketSendMsg')
-// const httpServer = createServer(app)
+const httpServer = createServer(app)
 
-const httpServer = createServer((req, res) => {
-  if (req.method === 'GET' && req.url === '/') {
-    console.log(1111111)
-    let content = fs.readFileSync('./views/index.html', 'utf-8')
-    res.end(content)
-  }
-})
+// const httpServer = createServer((req, res) => {
+//   if (req.method === 'GET' && req.url === '/') {
+//     console.log(1111111)
+//     let content = fs.readFileSync('./views/index.html', 'utf-8')
+//     res.end(content)
+//   }
+// })
 
 const io = new Server(httpServer, {
-  // cors: {
-  //   origin: 'http://localhost:8080',
-  // },
+  cors: {
+    origin: 'http://localhost:8080',
+  },
 })
 
-const messages = ['Hello world!', 'New Message']
+// const messages = ['Hello world!', 'New Message']
 
 io.on('connection', (socket) => {
-  messages.forEach((message) => {
-    socket.emit('message', message)
+  // messages.forEach((message) => {
+  //   socket.emit('message', message)
+  // })
+  socket.join('room1')
+  socket.join('room2')
+  socket.join('room3')
+  socket.join('room4')
+  const socketId = socket.id
+
+  socket.on('postMsgOnServer', (msg) => {
+    console.log(msg, socketId)
+
+    io.to('room' + msg.roomId).emit('message', {
+      socketId,
+      message: msg.message,
+      roomId: msg.roomId,
+    })
   })
 })
 
-acceptMessage(io)
-sendMessage(io)
+// acceptMessage(io)
+// sendMessage(io)
 
 app.use(express.json())
 app.use(cors())
@@ -320,10 +335,5 @@ app.listen(3000, async () => {
   console.log('Server is runing...')
   // await init()
 })
-
-// Запуск сокет-сервера
-// io.on('connection', (socket) => {
-//   console.log('Подключен клиент ', socket)
-// })
 
 httpServer.listen(3001)
