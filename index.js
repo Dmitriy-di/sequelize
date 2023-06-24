@@ -60,9 +60,12 @@ routes.forEach((item) => {
   app.use(`/${item}`, require(`./routes/${item}`))
 })
 
-// Маршруты для http
+// app.listen(3000, async () => {
+//   console.log('Server is runing...')
+//   await init()
+// })
 
-app.listen(3000, async () => {
+createServer({}, app).listen(3000, async () => {
   console.log('Server is runing...')
   await init()
 })

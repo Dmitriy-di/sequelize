@@ -6,6 +6,7 @@ module.exports = {
     'Staff',
     'Wirehouse',
     'WirehouseOwner',
+    'ChatHistory',
     'auth',
   ],
 }

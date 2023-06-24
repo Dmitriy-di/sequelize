@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 
 // const { User, Token, Subject } = require('../model');
 const { Distributor } = require('../models/init')
-const { Wirehouse_owner } = require('../models/init')
+const { WirehouseOwner } = require('../models/init')
 
 module.exports = {
   // usersTable - это либо Distributor, либо Wirehouse_owner
@@ -12,7 +12,7 @@ module.exports = {
       if (userType === 'distributor') {
         userModel = Distributor
       } else if (userType === 'wirehouse_owner') {
-        userType = Wirehouse_owner
+        userModel = WirehouseOwner
       }
 
       const foundUser = await userModel.findAll({
@@ -52,6 +52,7 @@ module.exports = {
       return res.status(200).send({
         accessToken,
         email: foundUser[0].dataValues.email,
+        userType: userType,
       })
     } catch (err) {
       return res.status(403).send({
@@ -66,10 +67,11 @@ module.exports = {
       if (body.userType === 'distributor') {
         userModel = Distributor
       } else if (body.userType === 'wirehouse_owner') {
-        userType = Wirehouse_owner
+        userModel = WirehouseOwner
       } else throw new Error()
 
       delete body.userType
+      console.log(123, userModel)
 
       const foundUser = await userModel.findAll({
         where: {
