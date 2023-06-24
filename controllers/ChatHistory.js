@@ -1,4 +1,7 @@
 const { ChatHistory } = require('../models/init')
+const { Room } = require('../models/init')
+const { Distributor } = require('../models/init')
+const { WirehouseOwner } = require('../models/init')
 
 module.exports = {
   async getAll(req, res) {
@@ -6,6 +9,7 @@ module.exports = {
       console.log(12312, req.headers.nameroom)
       const nameRoom = req.headers.nameroom
       const ChatHistorys = await ChatHistory.findAll({
+        include: [Room, Distributor, WirehouseOwner],
         where: {
           room: nameRoom,
         },

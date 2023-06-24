@@ -1,9 +1,12 @@
 const { Distributor } = require('../models/init')
+const { ChatHistory } = require('../models/init')
 
 module.exports = {
   async getAll(req, res) {
     try {
-      const Distributors = await Distributor.findAll()
+      const Distributors = await Distributor.findAll({
+        include: ChatHistory,
+      })
       return res.json(Distributors)
     } catch (err) {
       console.log('Ошибка')

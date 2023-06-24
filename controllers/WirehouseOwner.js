@@ -1,9 +1,12 @@
 const { WirehouseOwner } = require('../models/init')
+const { ChatHistory } = require('../models/init')
 
 module.exports = {
   async getAll(req, res) {
     try {
-      const WirehouseOwners = await WirehouseOwner.findAll()
+      const WirehouseOwners = await WirehouseOwner.findAll({
+        include: ChatHistory,
+      })
       return res.json(WirehouseOwners)
     } catch (err) {
       console.log('Ошибка')

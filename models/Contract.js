@@ -9,9 +9,7 @@ const Contract = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    distributor_id: {
-      type: DataTypes.INTEGER,
-    },
+
     date_contract: {
       type: DataTypes.DATEONLY,
     },

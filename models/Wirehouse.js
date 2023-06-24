@@ -4,16 +4,10 @@ const { DataTypes } = require('sequelize')
 const Wirehouse = sequelize.define(
   'Wirehouse',
   {
-    id_wirehouse: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-    },
-    id_wirehouse: {
-      type: DataTypes.INTEGER,
-    },
-    id_owner: {
-      type: DataTypes.INTEGER,
     },
     capacity_kg: {
       type: DataTypes.INTEGER,

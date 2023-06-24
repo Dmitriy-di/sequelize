@@ -2,7 +2,7 @@ const sequelize = require('../DB')
 const { DataTypes } = require('sequelize')
 
 const ChatHistory = sequelize.define(
-  'Contract',
+  'ChatHistory',
   {
     id: {
       type: DataTypes.INTEGER,

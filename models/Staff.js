@@ -18,12 +18,6 @@ const Staff = sequelize.define(
     last_name: {
       type: DataTypes.STRING,
     },
-    id_warehouse: {
-      type: DataTypes.INTEGER,
-    },
-    id_post: {
-      type: DataTypes.INTEGER,
-    },
   },
   {
     tableName: 'staff',

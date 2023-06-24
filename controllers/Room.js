@@ -1,9 +1,13 @@
 const { Room } = require('../models/init')
+const { ChatHistory } = require('../models/init')
 
 module.exports = {
   async getAll(req, res) {
     try {
-      const Rooms = await Room.findAll()
+      console.log(123)
+      const Rooms = await Room.findAll({
+        include: ChatHistory,
+      })
       return res.json(Rooms)
     } catch (err) {
       console.log('Ошибка')
