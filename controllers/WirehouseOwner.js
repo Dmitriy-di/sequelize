@@ -3,7 +3,6 @@ const { WirehouseOwner } = require('../models/init')
 module.exports = {
   async getAll(req, res) {
     try {
-      console.log(123)
       const WirehouseOwners = await WirehouseOwner.findAll()
       return res.json(WirehouseOwners)
     } catch (err) {

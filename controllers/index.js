@@ -5,4 +5,5 @@ module.exports = {
   Staff: require('./Staff'),
   Wirehouse: require('./Wirehouse'),
   WirehouseOwner: require('./WirehouseOwner'),
+  auth: require('./auth'),
 }

@@ -30,6 +30,12 @@ const Distributor = sequelize.define(
         '10',
       ),
     },
+    email: {
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
   },
   {
     tableName: 'distributors',

@@ -6,5 +6,6 @@ module.exports = {
     'Staff',
     'Wirehouse',
     'WirehouseOwner',
+    'auth',
   ],
 }

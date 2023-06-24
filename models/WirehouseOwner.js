@@ -12,6 +12,12 @@ const Wirehouse_owner = sequelize.define(
     name_organisation: {
       type: DataTypes.STRING,
     },
+    email: {
+      type: DataTypes.STRING,
+    },
+    password: {
+      type: DataTypes.STRING,
+    },
   },
   {
     tableName: 'Wirehouse_owners',
