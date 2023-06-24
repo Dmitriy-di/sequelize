@@ -30,14 +30,9 @@ const io = new Server(httpServer, {
 })
 
 io.on('connection', (socket) => {
-  // messages.forEach((message) => {
-  //   socket.emit('message', message)
-  // })
-  // socket.join('room1')
-  // socket.join('room2')
-  // socket.join('room3')
-  // socket.join('room4')
-  const socketId = socket.id
+  setInterval(() => {
+    socket.emit('countUsersOnline', io.engine.clientsCount)
+  }, 1000)
 
   socket.on('createChat', async (nameNewChat) => {
     try {
