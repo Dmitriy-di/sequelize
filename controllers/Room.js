@@ -3,8 +3,8 @@ const { ChatHistory } = require('../models/init')
 
 module.exports = {
   async getAll(req, res) {
+    console.log(222)
     try {
-      console.log(123)
       const Rooms = await Room.findAll({
         include: ChatHistory,
       })
@@ -15,9 +15,12 @@ module.exports = {
   },
 
   async get({ params: { id } }, res) {
+    console.log(111)
     try {
-      const Room = await Room.findByPk(id)
-      return res.json(Room)
+      const RoomOne = await Room.findByPk(id, {
+        include: ChatHistory,
+      })
+      return res.json(RoomOne)
     } catch (err) {
       console.log('Ошибка')
     }

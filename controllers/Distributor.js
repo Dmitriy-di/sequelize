@@ -15,8 +15,10 @@ module.exports = {
 
   async get({ params: { id } }, res) {
     try {
-      const Distributor = await Distributor.findByPk(id)
-      return res.json(Distributor)
+      const DistributorOne = await Distributor.findByPk(id, {
+        include: ChatHistory,
+      })
+      return res.json(DistributorOne)
     } catch (err) {
       console.log('Ошибка')
     }

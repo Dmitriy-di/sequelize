@@ -23,8 +23,10 @@ module.exports = {
 
   async get({ params: { id } }, res) {
     try {
-      const ChatHistory = await ChatHistory.findByPk(id)
-      return res.json(ChatHistory)
+      const ChatHistoryOne = await ChatHistory.findByPk(id, {
+        include: [Room, Distributor, WirehouseOwner],
+      })
+      return res.json(ChatHistoryOne)
     } catch (err) {
       console.log('Ошибка')
     }
@@ -54,12 +56,12 @@ module.exports = {
 
   async delete({ params: { id } }, res) {
     try {
-      const ChatHistory = await User.destroy({
+      const ChatHistoryOne = await ChatHistory.destroy({
         where: {
           id_ChatHistory: id,
         },
       })
-      return res.json('deleted: ', ChatHistory)
+      return res.json('deleted: ', ChatHistoryOne)
     } catch (err) {
       console.log('Ошибка')
     }

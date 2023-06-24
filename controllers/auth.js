@@ -9,9 +9,9 @@ module.exports = {
   // usersTable - это либо Distributor, либо Wirehouse_owner
   async login({ body: { email, password, userType } }, res) {
     try {
-      if (userType === 'distributor') {
+      if (userType === 'Distributor') {
         userModel = Distributor
-      } else if (userType === 'wirehouse_owner') {
+      } else if (userType === 'Wirehouse_owner') {
         userModel = WirehouseOwner
       }
 
@@ -53,6 +53,7 @@ module.exports = {
         accessToken,
         email: foundUser[0].dataValues.email,
         userType: userType,
+        userId: foundUser[0].dataValues.id,
       })
     } catch (err) {
       return res.status(403).send({
@@ -64,9 +65,9 @@ module.exports = {
 
   async signUp({ body }, res) {
     try {
-      if (body.userType === 'distributor') {
+      if (body.userType === 'Distributor') {
         userModel = Distributor
-      } else if (body.userType === 'wirehouse_owner') {
+      } else if (body.userType === 'Wirehouse_owner      ') {
         userModel = WirehouseOwner
       } else throw new Error()
 

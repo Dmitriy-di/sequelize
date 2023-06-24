@@ -11,15 +11,17 @@ const httpServer = createServer(app)
 const { instrument } = require('@socket.io/admin-ui') // Подключим панель управления
 
 const { routes } = require('./routes/index')
-
-// const httpServer = createServer((req, res) => {
-//   if (req.method === 'GET' && req.url === '/') {
-//     console.log(1111111)
-//     let content = fs.readFileSync('./views/index.html', 'utf-8')
-//     res.end(content)
-//   }
-// })
-
+//!
+const Wirehouse = require('./models/Wirehouse')
+const WirehouseOwner = require('./models/WirehouseOwner')
+const Staff = require('./models/Staff')
+const Post = require('./models/Posts')
+const Distributor = require('./models/Distributor')
+const Contract = require('./models/Contract')
+const ChatHistory = require('./models/chatHistory')
+const Room = require('./models/Rooms')
+const Product = require('./models/Product')
+//! //
 const io = new Server(httpServer, {
   cors: {
     origin: ['https://admin.socket.io', 'http://localhost:8080'],
@@ -27,31 +29,70 @@ const io = new Server(httpServer, {
   },
 })
 
-// const messages = ['Hello world!', 'New Message']
-
 io.on('connection', (socket) => {
   // messages.forEach((message) => {
   //   socket.emit('message', message)
   // })
-  socket.join('room1')
-  socket.join('room2')
-  socket.join('room3')
-  socket.join('room4')
+  // socket.join('room1')
+  // socket.join('room2')
+  // socket.join('room3')
+  // socket.join('room4')
   const socketId = socket.id
 
-  socket.on('postMsgOnServer', (msg) => {
-    console.log(msg, socketId)
+  socket.on('createChat', async (nameNewChat) => {
+    try {
+      const room = await Room.create({ name: nameNewChat })
+      // const rooms = await Room.findAll({
+      //   include: ChatHistory,
+      // })
+      socket.emit('setNewRoom', room)
+      socket.broadcast.emit('setNewRoom', room)
+    } catch (err) {
+      console.log(err)
+    }
+  })
 
-    io.to('room' + msg.roomId).emit('message', {
-      socketId,
-      message: msg.message,
-      roomId: msg.roomId,
+  socket.on('postMsgOnServer', async (msg) => {
+    if (msg.userRole === 'Distributor') {
+      await ChatHistory.create({
+        message: msg.message,
+        RoomId: msg.roomId,
+        DistributorId: msg.userId,
+      })
+    } else {
+      await ChatHistory.create({
+        message: msg.message,
+        RoomId: msg.roomId,
+        WirehouseOwnerId: msg.userId,
+      })
+    }
+
+    const newMessage = await ChatHistory.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 1,
+      include: [Distributor, Room, WirehouseOwner],
     })
+
+    socket.emit('message', newMessage[0])
+    socket.broadcast.emit('message', newMessage[0])
+    // io.to('room' + msg.roomId).emit('message', {
+    //   socketId,
+    //   message: msg.message,
+    //   roomId: msg.roomId,
+    // })
+  })
+
+  socket.on('joinRoom', async (roomInfo) => {
+    socket.join(roomInfo.roomName)
+    const chatHistory = await ChatHistory.findAll({
+      where: {
+        RoomId: roomInfo.roomId,
+      },
+      include: [Distributor, Room, WirehouseOwner],
+    })
+    socket.emit('chatHistories', chatHistory)
   })
 })
-
-// acceptMessage(io)
-// sendMessage(io)
 
 app.use(express.json())
 app.use(cors())
@@ -59,11 +100,6 @@ app.use(cors())
 routes.forEach((item) => {
   app.use(`/${item}`, require(`./routes/${item}`))
 })
-
-// app.listen(3000, async () => {
-//   console.log('Server is runing...')
-//   await init()
-// })
 
 createServer({}, app).listen(3000, async () => {
   console.log('Server is runing...')

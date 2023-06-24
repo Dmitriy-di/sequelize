@@ -15,8 +15,10 @@ module.exports = {
 
   async get({ params: { id } }, res) {
     try {
-      const WirehouseOwner = await WirehouseOwner.findByPk(id)
-      return res.json(WirehouseOwner)
+      const WirehouseOwnerOne = await WirehouseOwner.findByPk(id, {
+        include: ChatHistory,
+      })
+      return res.json(WirehouseOwnerOne)
     } catch (err) {
       console.log('Ошибка')
     }
@@ -24,8 +26,8 @@ module.exports = {
 
   async create({ body }, res) {
     try {
-      const WirehouseOwner = await WirehouseOwner.create(body)
-      return res.json('created: ', WirehouseOwner)
+      const WirehouseOwnerOne = await WirehouseOwner.create(body)
+      return res.json('created: ', WirehouseOwnerOne)
     } catch (err) {
       console.log('Ошибка')
     }
@@ -33,12 +35,12 @@ module.exports = {
 
   async update({ params: { id }, body }, res) {
     try {
-      const WirehouseOwner = await WirehouseOwner.update(body, {
+      const WirehouseOwnerOne = await WirehouseOwner.update(body, {
         where: {
           id_WirehouseOwner: id,
         },
       })
-      return res.json('updated: ', WirehouseOwner)
+      return res.json('updated: ', WirehouseOwnerOne)
     } catch (err) {
       console.log('Ошибка')
     }
@@ -46,12 +48,12 @@ module.exports = {
 
   async delete({ params: { id } }, res) {
     try {
-      const WirehouseOwner = await User.destroy({
+      const WirehouseOwnerOne = await WirehouseOwner.destroy({
         where: {
           id_WirehouseOwner: id,
         },
       })
-      return res.json('deleted: ', WirehouseOwner)
+      return res.json('deleted: ', WirehouseOwnerOne)
     } catch (err) {
       console.log('Ошибка')
     }
