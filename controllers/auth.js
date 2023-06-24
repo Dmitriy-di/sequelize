@@ -14,7 +14,6 @@ module.exports = {
       } else if (userType === 'wirehouse_owner') {
         userType = Wirehouse_owner
       }
-      console.log(email, password, userType)
 
       const foundUser = await userModel.findAll({
         where: {
@@ -26,25 +25,23 @@ module.exports = {
         console.log(4)
         return res.status(403).send({
           message: 'Извините, но логин или пароль не подходят!',
-          err,
         })
       }
 
-      const isPasswordCorrect = foundUser.password === password
+      const isPasswordCorrect = foundUser[0].dataValues.password === password
 
       if (!isPasswordCorrect) {
         console.log(5)
         return res.status(403).send({
           message: 'Извините, но логин или пароль не подходят!2',
-          err,
         })
       }
 
       //Подписываем токен
       const accessToken = jwt.sign(
         {
-          userId: foundUser.id,
-          email: foundUser.email,
+          userId: foundUser[0].dataValues.id,
+          email: foundUser[0].dataValues.email,
         },
         process.env.JWT_SECRET,
         {
@@ -54,10 +51,9 @@ module.exports = {
 
       return res.status(200).send({
         accessToken,
-        email: foundUser.email,
+        email: foundUser[0].dataValues.email,
       })
     } catch (err) {
-      console.log(6)
       return res.status(403).send({
         message: 'Извините, но логин или пароль не подходят!3',
         err,
